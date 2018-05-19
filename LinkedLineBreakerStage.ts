@@ -82,3 +82,56 @@ class LLBAnimator {
         }
     }
 }
+
+class LLBNode {
+
+    next : LLBNode
+
+    prev : LLBNode
+
+    state : LLBState = new LLBState()
+
+    constructor(private i : number) {
+        this.addNeighbor()
+    }
+
+    addNeighbor() {
+        if (this.i < LLB_NODES - 1) {
+            this.next = new LLBNode(this.i + 1)
+            this.next.prev = this
+        }
+    }
+
+    draw(context : CanvasRenderingContext2D) {
+        const gap : number = (w / LLB_NODES)
+        context.save()
+        context.translate((this.i) * gap + gap/2 + gap * this.state.scales[1], h/2)
+        for(var i = 0; i < 2; i++) {
+            context.save()
+            context.translate((1 - i) * gap/2, gap/2 * (this.state.scales[0]) * (1 - this.state.scales[2]) * (1 - 2 * i))
+            context.beginPath()
+            context.restore()
+        }
+        context.restore()
+    }
+
+    update(stopcb : Function) {
+        this.state.update(stopcb)
+    }
+
+    startUpdating(startcb : Function) {
+        this.state.startUpdating(startcb)
+    }
+
+    getNext(dir : number, cb : Function) {
+        var curr : LLBNode = this.prev
+        if (dir == 1) {
+            curr = this.next
+        }
+        if (curr) {
+            return curr
+        }
+        cb()
+        return this
+    }
+}
