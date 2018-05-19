@@ -41,6 +41,12 @@ class LinkedLineBreakerStage {
             })
         }
     }
+
+    static init() {
+        const stage = new LinkedLineBreakerStage()
+        stage.render()
+        stage.handleTap()
+    }
 }
 
 class LLBState {
