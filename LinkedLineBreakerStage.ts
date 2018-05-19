@@ -5,6 +5,10 @@ class LinkedLineBreakerStage {
 
     context : CanvasRenderingContext2D
 
+    linkedLineBreaker : LinkedLineBreaker = new LinkedLineBreaker()
+
+    animator : LLBAnimator = new LLBAnimator()
+
     constructor() {
         this.initCanvas()
     }
@@ -19,11 +23,22 @@ class LinkedLineBreakerStage {
     render() {
         this.context.fillStyle = '#212121'
         this.context.fillRect(0, 0, w, h)
+        this.context.strokeStyle = '#311B92'
+        this.context.lineCap = 'round'
+        this.context.lineWidth = Math.min(w, h) / 50
+        this.linkedLineBreaker.draw(this.context)
     }
 
     handleTap() {
         this.canvas.onmousedown = () => {
-
+            this.linkedLineBreaker.startUpdating(() => {
+                this.animator.start(() => {
+                    this.render()
+                    this.linkedLineBreaker.update(() => {
+                        this.animator.stop()
+                    })
+                })
+            })
         }
     }
 }
