@@ -1,7 +1,7 @@
 const w : number = window.innerWidth, h : number = window.innerHeight, LLB_NODES = 5
 class LinkedLineBreakerStage {
 
-    canvas : HTMLCanvasElement
+    canvas : HTMLCanvasElement = document.createElement('canvas')
 
     context : CanvasRenderingContext2D
 
@@ -61,9 +61,10 @@ class LLBState {
 
     update(stopcb : Function) {
         this.scales[this.j] += 0.1 * this.dir
+	console.log(this.scales)
         if (Math.abs(this.scales[this.j] - this.prevScale) > 1) {
             this.scales[this.j] = this.prevScale + this.dir
-            this.dir = 0
+            this.j += this.dir
             if (this.j == -1 || this.j == this.scales.length) {
                 this.j -= this.dir
                 this.dir = 0
@@ -131,7 +132,10 @@ class LLBNode {
             context.save()
             context.translate((1 - i) * gap/2, gap/2 * (this.state.scales[0]) * (1 - this.state.scales[2]) * (1 - 2 * i))
             context.beginPath()
-            context.restore()
+            context.moveTo(0, 0)
+	    context.lineTo(gap/2, 0)
+	    context.stroke()
+	    context.restore()
         }
         context.restore()
     }
@@ -164,7 +168,7 @@ class LinkedLineBreaker {
     dir : number = 1
 
     draw(context : CanvasRenderingContext2D) {
-
+        this.curr.draw(context)
     }
 
     update(stopcb : Function) {
@@ -181,3 +185,4 @@ class LinkedLineBreaker {
     }
 
 }
+LinkedLineBreakerStage.init()
